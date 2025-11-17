@@ -18,8 +18,6 @@ const ignores = [
   "**/bazel-testlogs",
   "**/dist",
   "**/dist-dev",
-  "**/lib",
-  "**/lib-types",
   "**/etc",
   "**/external",
   "**/node_modules",
@@ -28,21 +26,15 @@ const ignores = [
   "**/tsdoc-metadata.json",
   "**/target",
   "**/output",
-  "**/rollup.config.js",
   "**/build",
   "**/.cache",
   "**/.vscode",
   "**/.rollup.cache",
-  "**/dist",
   "**/tsconfig.tsbuildinfo",
-  "**/vite.config.ts",
-  "**/*.spec.tsx",
-  "**/*.spec.ts",
   "**/.netlify",
   "**/pnpm-lock.yaml",
   "**/package-lock.json",
   "**/yarn.lock",
-  "**/server",
   "eslint.config.js",
 ];
 
@@ -69,5 +61,5 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
     },
-  },
+  }
 );
