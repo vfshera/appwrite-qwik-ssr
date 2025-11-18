@@ -127,15 +127,11 @@ export const AuthMiddleware: RequestHandler = async ({
   redirect,
 }) => {
   try {
-    console.log("AuthMiddleware");
-
     const { account } = createSessionClient(cookie);
 
     const user = (await account.get()) as SharedMap["user"];
 
     sharedMap.set("user", user || null);
-
-    console.log(url.toString(), user);
 
     if (
       user &&
@@ -143,9 +139,7 @@ export const AuthMiddleware: RequestHandler = async ({
     ) {
       throw redirect(302, "/account");
     }
-  } catch (err) {
-    console.log("Err", { err });
-
+  } catch {
     sharedMap.set("user", null);
   }
 };
