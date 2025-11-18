@@ -6,10 +6,10 @@ import { defineConfig, type UserConfig } from "vite";
 import { qwikVite } from "@builder.io/qwik/optimizer";
 import { qwikCity } from "@builder.io/qwik-city/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { denyImports } from "vite-env-only";
 import pkg from "./package.json";
 
 type PkgDep = Record<string, string>;
+
 const { dependencies = {}, devDependencies = {} } = pkg as any as {
   dependencies: PkgDep;
   devDependencies: PkgDep;
@@ -23,13 +23,9 @@ errorOnDuplicatesPkgDeps(devDependencies, dependencies);
 export default defineConfig((): UserConfig => {
   return {
     plugins: [
-      qwikCity(),
+      qwikCity({ trailingSlash: false }),
       qwikVite(),
       tsconfigPaths({ root: "." }),
-      denyImports({
-        client: { files: ["**/.server/*", "**/*.server.*"] },
-        server: { files: ["**/.client/*", "**/*.client.*"] },
-      }),
     ],
     // This tells Vite which dependencies to pre-build in dev mode.
     optimizeDeps: {
@@ -82,6 +78,7 @@ function errorOnDuplicatesPkgDeps(
   dependencies: PkgDep
 ) {
   let msg = "";
+
   // Create an array 'duplicateDeps' by filtering devDependencies.
   // If a dependency also exists in dependencies, it is considered a duplicate.
   const duplicateDeps = Object.keys(devDependencies).filter(
