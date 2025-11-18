@@ -100,14 +100,8 @@ export const useAuthSignin = globalAction$(
 /**
  * Get the current user
  */
-export const useAuthUser = routeLoader$(async ({ sharedMap, redirect }) => {
-  const user = sharedMap.get("user") as SharedMap["user"];
-
-  if (!user) {
-    throw redirect(302, "/signin");
-  }
-
-  return user;
+export const useAuthUser = routeLoader$(async ({ sharedMap }) => {
+  return sharedMap.get("user") as SharedMap["user"];
 });
 
 /**
@@ -133,11 +127,15 @@ export const AuthMiddleware: RequestHandler = async ({
   redirect,
 }) => {
   try {
+    console.log("AuthMiddleware");
+
     const { account } = createSessionClient(cookie);
 
     const user = (await account.get()) as SharedMap["user"];
 
     sharedMap.set("user", user || null);
+
+    console.log(url.toString(), user);
 
     if (
       user &&
@@ -145,7 +143,9 @@ export const AuthMiddleware: RequestHandler = async ({
     ) {
       throw redirect(302, "/account");
     }
-  } catch {
+  } catch (err) {
+    console.log("Err", { err });
+
     sharedMap.set("user", null);
   }
 };
