@@ -1,4 +1,5 @@
 import { component$ } from "@builder.io/qwik";
+import { Form } from "@builder.io/qwik-city";
 import { useAuthUser, useAuthSignout } from "~/routes/plugin@auth";
 
 function getInitials(name: string) {
@@ -11,7 +12,7 @@ function getInitials(name: string) {
 export default component$(() => {
   const user = useAuthUser();
 
-  const signOut = useAuthSignout();
+  const signout = useAuthSignout();
 
   return (
     <div class="u-max-width-500 u-width-full-line">
@@ -20,12 +21,12 @@ export default component$(() => {
         <section class="card">
           <div class="user-profile">
             <span class="avatar">
-              {getInitials(user.value.name || user.value.email)}
+              {getInitials(user.value?.name || user.value?.email || "")}
             </span>
             <span class="user-profile-info">
-              <span class="name">{user.value.name}</span>
+              <span class="name">{user.value?.name}</span>
               <div class="interactive-text-output u-padding-inline-0">
-                <span class="text">{user.value.$id}</span>
+                <span class="text">{user.value?.$id}</span>
                 <div class="u-flex u-cross-child-start u-gap-8">
                   <button
                     class="interactive-text-output-button"
@@ -40,24 +41,20 @@ export default component$(() => {
             <span class="user-profile-empty-column" />
             <span class="user-profile-info">
               <span class="text">
-                Welcome back, {user.value.name || user.value.email}!
+                Welcome back, {user.value?.name || user.value?.email}!
               </span>
             </span>
           </div>
         </section>
-        <form class="form common-section">
+        <Form class="form common-section" action={signout}>
           <ul class="form-list" style={{ "--form-list-gap": "1.5rem" }}>
             <li class="form-item">
-              <button
-                class="button is-secondary is-full-width"
-                type="submit"
-                onClick$={async () => signOut.submit({})}
-              >
+              <button class="button is-secondary is-full-width" type="submit">
                 Sign out
               </button>
             </li>
           </ul>
-        </form>
+        </Form>
       </div>
     </div>
   );
