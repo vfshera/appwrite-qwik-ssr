@@ -60,7 +60,7 @@ export function createSessionClient(cookie: Cookie) {
 export const useAuthSignin = globalAction$(
   async (
     { redirectTo = "/account", ...credentials },
-    { cookie, redirect, fail }
+    { cookie, redirect, fail, url }
   ) => {
     try {
       const { account } = createAdminClient();
@@ -79,7 +79,7 @@ export const useAuthSignin = globalAction$(
         secure: true,
       });
 
-      throw redirect(303, redirectTo);
+      throw redirect(303, new URL(redirectTo, url).toString());
     } catch (err) {
       return fail(500, {
         message:
@@ -107,12 +107,14 @@ export const useAuthUser = routeLoader$(async ({ sharedMap }) => {
  * Signout action
  */
 export const useAuthSignout = globalAction$(
-  async ({ redirectTo = "/" }, { cookie, redirect }) => {
+  async ({ redirectTo = "/" }, { cookie, redirect, url }) => {
     const { account } = createSessionClient(cookie);
+
     cookie.delete(SESSION_COOKIE_NAME);
+
     await account.deleteSession({ sessionId: "current" });
 
-    throw redirect(303, redirectTo);
+    throw redirect(303, new URL(redirectTo, url).toString());
   },
   zod$({
     redirectTo: z.string().optional(),
@@ -135,14 +137,14 @@ export const AuthMiddleware: RequestHandler = async ({
     sharedMap.set("user", user || null);
 
     if (user && ["/signin", "/signup"].includes(pathname)) {
-      throw redirect(302, "/account");
+      throw redirect(302, new URL("/account", url).toString());
     }
   } catch {
     sharedMap.set("user", null);
   }
 
   if (pathname.startsWith("/admin") && !sharedMap.get("user")) {
-    const to = new URL("/signin", url.toString());
+    const to = new URL("/signin", url);
     to.searchParams.set("redirectTo", pathname);
 
     throw redirect(302, to.toString());
