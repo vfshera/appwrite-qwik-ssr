@@ -35,17 +35,16 @@ export function createAdminClient() {
  * Session client, used to make requests on behalf of the logged in user
  */
 export function createSessionClient(cookie: Cookie) {
-  const client = new Client()
-    .setEndpoint(env.APPWRITE_ENDPOINT)
-    .setProject(env.APPWRITE_PROJECT_ID);
-
   const session = cookie.get(SESSION_COOKIE_NAME);
 
   if (!session || !session.value) {
     throw new Error("Session not found!");
   }
 
-  client.setSession(session.value);
+  const client = new Client()
+    .setEndpoint(env.APPWRITE_ENDPOINT)
+    .setProject(env.APPWRITE_PROJECT_ID)
+    .setSession(session.value);
 
   // Return the services you need
   return {
