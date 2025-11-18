@@ -64,7 +64,7 @@ export const useAuthSignin = globalAction$(
     { cookie, redirect, fail }
   ) => {
     try {
-      const { account } = await createAdminClient();
+      const { account } = createAdminClient();
 
       const session = await account.createEmailPasswordSession(credentials);
 
@@ -80,7 +80,7 @@ export const useAuthSignin = globalAction$(
         secure: true,
       });
 
-      throw redirect(302, redirectTo);
+      throw redirect(303, redirectTo);
     } catch (err) {
       return fail(500, {
         message:
@@ -100,7 +100,7 @@ export const useAuthSignin = globalAction$(
 /**
  * Get the current user
  */
-export const useAuthSession = routeLoader$(async ({ sharedMap, redirect }) => {
+export const useAuthUser = routeLoader$(async ({ sharedMap, redirect }) => {
   const user = sharedMap.get("user") as SharedMap["user"];
 
   if (!user) {
@@ -114,19 +114,19 @@ export const useAuthSession = routeLoader$(async ({ sharedMap, redirect }) => {
  * Signout action
  */
 export const useAuthSignout = globalAction$(
-  async ({ redirectTo = "/signin" }, { cookie, redirect }) => {
-    const { account } = await createSessionClient(cookie);
+  async ({ redirectTo = "/" }, { cookie, redirect }) => {
+    const { account } = createSessionClient(cookie);
     cookie.delete(SESSION_COOKIE_NAME);
     await account.deleteSession({ sessionId: "current" });
 
-    throw redirect(302, redirectTo);
+    throw redirect(303, redirectTo);
   },
   zod$({
     redirectTo: z.string().optional(),
   })
 );
 
-export const SessionMiddleware: RequestHandler = async ({
+export const AuthMiddleware: RequestHandler = async ({
   sharedMap,
   cookie,
   url,

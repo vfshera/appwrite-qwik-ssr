@@ -1,6 +1,6 @@
 export {
-  useAuthSession,
+  useAuthUser,
   useAuthSignout,
   useAuthSignin,
-  SessionMiddleware as onRequest,
+  AuthMiddleware as onRequest,
 } from "~/lib/appwrite.server";

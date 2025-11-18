@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { useAuthSession, useAuthSignout } from "~/routes/plugin@auth";
+import { useAuthUser, useAuthSignout } from "~/routes/plugin@auth";
 
 function getInitials(name: string) {
   const [first, last] = name.split(" ");
@@ -9,7 +9,7 @@ function getInitials(name: string) {
 }
 
 export default component$(() => {
-  const user = useAuthSession();
+  const user = useAuthUser();
 
   const signOut = useAuthSignout();
 
