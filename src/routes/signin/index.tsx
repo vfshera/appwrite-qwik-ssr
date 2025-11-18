@@ -1,12 +1,15 @@
 import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { Form, Link } from "@builder.io/qwik-city";
+import { useAuthSignin } from "~/routes/plugin@auth";
 
 export default component$(() => {
+  const action = useAuthSignin();
+
   return (
     <div class="u-max-width-500 u-width-full-line">
       <h1 class="heading-level-2 u-margin-block-start-auto">Demo sign in</h1>
       <div class="u-margin-block-start-24">
-        <form class="form common-section">
+        <Form class="form common-section" action={action}>
           <ul class="form-list" style={{ "--form-list-gap": "1.5rem" }}>
             <li class="form-item">
               <p>
@@ -34,6 +37,8 @@ export default component$(() => {
                   type="email"
                   class="input-text"
                   autoComplete="off"
+                  value={action.formData?.get("email")}
+                  required
                 />
               </div>
             </li>
@@ -53,6 +58,8 @@ export default component$(() => {
                   type="password"
                   class="input-text"
                   autoComplete="off"
+                  value={action.formData?.get("password")}
+                  required
                 />
                 <button
                   type="button"
@@ -71,13 +78,12 @@ export default component$(() => {
             <span class="with-separators eyebrow-heading-3">or</span>
             <li class="form-item"></li>
           </ul>
-        </form>
-        {/* <form action={signInWithGithub}>
-          <button class="button is-github is-full-width" type="submit">
+        </Form>
+
+        {/* <button class="button is-github is-full-width" type="button">
             <span class="icon-github" aria-hidden="true" />
             <span class="text">Sign up with GitHub</span>
-          </button>
-        </form> */}
+          </button> */}
       </div>
       <ul class="inline-links is-center is-with-sep u-margin-block-start-32">
         <li class="inline-links-item">
