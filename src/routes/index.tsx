@@ -19,7 +19,7 @@ export default component$(() => {
           <p style={{ fontSize: "1.25rem" }}>
             Hello {user.value.name || user.value.email}
           </p>
-          <Link href="/account" class="button is-secondary is-full-width">
+          <Link href="/admin/account" class="button is-secondary is-full-width">
             Go to Account
           </Link>
         </>
