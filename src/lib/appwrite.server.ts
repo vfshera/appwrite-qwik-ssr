@@ -125,6 +125,8 @@ export const AuthMiddleware: RequestHandler = async ({
   url,
   redirect,
 }) => {
+  const pathname = url.pathname.replace(/\/+$/, "");
+
   try {
     const { account } = createSessionClient(cookie);
 
@@ -132,13 +134,17 @@ export const AuthMiddleware: RequestHandler = async ({
 
     sharedMap.set("user", user || null);
 
-    if (
-      user &&
-      ["signin", "signup"].includes(url.pathname.replace(/\//g, ""))
-    ) {
+    if (user && ["/signin", "/signup"].includes(pathname)) {
       throw redirect(302, "/account");
     }
   } catch {
     sharedMap.set("user", null);
+  }
+
+  if (pathname.startsWith("/admin") && !sharedMap.get("user")) {
+    const to = new URL("/signin", url.toString());
+    to.searchParams.set("redirectTo", pathname);
+
+    throw redirect(302, to.toString());
   }
 };
